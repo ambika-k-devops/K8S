@@ -136,3 +136,82 @@ kubectl api-resources
 ---
 
 If you want, I can also give you a **printable cheat sheet** of `kubectl` commands. Let me know!
+
+
+Yes, **Kubernetes supports resource quotas**, which allow administrators to **limit the resource usage (CPU, memory, storage, etc.)** within a **namespace**.
+
+---
+
+### 🔹 What Is a Resource Quota?
+
+A **ResourceQuota** object ensures that teams or apps don't use more than their share of cluster resources in a given namespace.
+
+---
+
+### 🔹 How to View Quotas
+
+```bash
+kubectl get resourcequotas
+kubectl get resourcequotas -n <namespace>
+kubectl describe resourcequota <quota-name> -n <namespace>
+```
+
+Or short form:
+
+```bash
+kubectl get quota
+```
+
+---
+
+### 🔹 Example Output
+
+```bash
+kubectl get quota -n dev
+```
+
+```
+NAME           AGE   REQUEST     LIMIT
+dev-quota      10d   cpu: 2      memory: 4Gi
+```
+
+---
+
+### 🔹 Sample Quota YAML
+
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: dev-quota
+  namespace: dev
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "2"
+    requests.memory: "4Gi"
+    limits.cpu: "4"
+    limits.memory: "8Gi"
+```
+
+Apply it:
+
+```bash
+kubectl apply -f quota.yaml
+```
+
+---
+
+### 🔹 You Can Set Quotas For:
+
+* Pods count
+* CPU requests/limits
+* Memory requests/limits
+* Persistent volumes
+* Object counts (e.g., secrets, services)
+* Storage class requests
+
+---
+
+Let me know if you want a YAML template to **enforce quota for a team/project** with practical values.
+
